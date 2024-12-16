@@ -11,6 +11,7 @@ namespace VulnTracker.DataAccess.Context
     public class VulnTrackerDbContext : DbContext
     {
         public DbSet<Vulnerability> Vulnerabilities { get; set; }
+        public DbSet<Project> Projects { get; set; }
 
         public VulnTrackerDbContext(DbContextOptions<VulnTrackerDbContext> options)
             : base(options) { }
@@ -18,7 +19,15 @@ namespace VulnTracker.DataAccess.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Vulnerability>().HasKey(v => v.Id);
+            modelBuilder.Entity<Vulnerability>()
+                        .HasOne(v => v.Project)
+                        .WithMany(p => p.Vulnerabilities)
+                        .HasForeignKey(v => v.ProjectId);
+
+            modelBuilder.Entity<Project>().HasKey(p => p.Id);
+
             base.OnModelCreating(modelBuilder);
         }
     }
+
 }
