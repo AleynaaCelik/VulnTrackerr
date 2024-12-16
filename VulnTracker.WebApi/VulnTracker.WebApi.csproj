@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\VulnTracker.DataAccess\VulnTracker.DataAccess.csproj" />
     <ProjectReference Include="..\VulnTracker.Domain\VulnTracker.Domain.csproj" />
   </ItemGroup>
