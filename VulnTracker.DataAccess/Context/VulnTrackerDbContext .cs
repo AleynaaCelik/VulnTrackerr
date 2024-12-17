@@ -12,6 +12,7 @@ namespace VulnTracker.DataAccess.Context
     {
         public DbSet<Vulnerability> Vulnerabilities { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public VulnTrackerDbContext(DbContextOptions<VulnTrackerDbContext> options)
             : base(options) { }
