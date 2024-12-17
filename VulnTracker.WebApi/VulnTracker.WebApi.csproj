@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VulnTracker.Business\VulnTracker.Business.csproj" />
     <ProjectReference Include="..\VulnTracker.DataAccess\VulnTracker.DataAccess.csproj" />
     <ProjectReference Include="..\VulnTracker.Domain\VulnTracker.Domain.csproj" />
   </ItemGroup>
