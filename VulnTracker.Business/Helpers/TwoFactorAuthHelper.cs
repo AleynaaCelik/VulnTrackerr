@@ -5,14 +5,15 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-public static class TwoFactorAutchHelper
+public static class TwoFactorAuthHelper
 {
     /// <summary>
     /// Rastgele bir Secret Key oluşturur.
     /// </summary>
     public static string GenerateSecretKey()
     {
-        return KeyGeneration.GenerateRandomKey(20);
+        var key = KeyGeneration.GenerateRandomKey(20); // Rastgele byte dizisi oluştur
+        return Base32Encoding.ToString(key); // Base32 string'e dönüştür
     }
 
     /// <summary>
@@ -20,7 +21,7 @@ public static class TwoFactorAutchHelper
     /// </summary>
     public static string GenerateOtpUri(string userEmail, string secretKey)
     {
-        return new OtpUri(OtpType.Totp, secretKey, userEmail, "VulnTracker").ToString();
+        return $"otpauth://totp/{userEmail}?secret={secretKey}&issuer=VulnTracker";
     }
 
     /// <summary>
