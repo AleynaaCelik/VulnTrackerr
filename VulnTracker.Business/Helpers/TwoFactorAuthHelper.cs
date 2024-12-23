@@ -1,4 +1,4 @@
-﻿using OtpNet;
+﻿using OtpNet; // OTP işlemleri için gerekli kütüphane
 using QRCoder;
 using System;
 using System.Drawing;
@@ -49,5 +49,14 @@ public static class TwoFactorAuthHelper
                 return Convert.ToBase64String(qrCodeBytes); // Base64 string'e çevir
             }
         }
+    }
+
+    /// <summary>
+    /// OTP doğrulama işlemi yapar.
+    /// </summary>
+    public static bool ValidateOTP(string secretKey, string otpCode)
+    {
+        var otp = new Totp(Base32Encoding.ToBytes(secretKey));  // Secret Key'i byte dizisine dönüştür
+        return otp.VerifyTotp(otpCode, out long timeWindow); // OTP'yi doğrula
     }
 }

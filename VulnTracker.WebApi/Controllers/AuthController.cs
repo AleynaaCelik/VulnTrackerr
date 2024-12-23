@@ -64,7 +64,7 @@ namespace VulnTracker.WebApi.Controllers
             // Secret key oluştur
             var secretKey = TwoFactorAuthHelper.GenerateSecretKey();
             user.SecretKey = secretKey; // Secret key'i kullanıcıya ata
-            user.Is2FAEnabled = true;   // 2FA özelliğini etkinleştir
+            user.IsTwoFactorEnabled = true;   // 2FA özelliğini etkinleştir
 
             // QR kodu için URI oluştur
             var qrCodeUri = TwoFactorAuthHelper.GenerateOtpUri(user.Email, secretKey);
@@ -97,7 +97,7 @@ namespace VulnTracker.WebApi.Controllers
                 return NotFound("User not found");
 
             // 2FA doğrulamasını kontrol et
-            if (user.Is2FAEnabled && TwoFactorAuthHelper.ValidateOTP(user.SecretKey, request.OtpCode))
+            if (user.IsTwoFactorEnabled && TwoFactorAuthHelper.ValidateOTP(user.SecretKey, request.OtpCode))
             {
                 // 2FA doğrulandı, JWT token oluşturulabilir
                 var token = JwtTokenHelper.GenerateToken(user, _config);
