@@ -56,20 +56,15 @@ namespace VulnTracker.WebApi.Controllers
         [HttpPost("enable-2fa")]
         public async Task<IActionResult> Enable2FA([FromBody] string username)
         {
-            // Kullanıcıyı veritabanından bul
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
                 return NotFound("User not found");
 
-            // Secret key oluştur
             var secretKey = TwoFactorAuthHelper.GenerateSecretKey();
-            user.SecretKey = secretKey; // Secret key'i kullanıcıya ata
-            user.IsTwoFactorEnabled = true;   // 2FA özelliğini etkinleştir
+            user.SecretKey = secretKey;
+            user.IsTwoFactorEnabled = true;
 
-            // QR kodu için URI oluştur
             var qrCodeUri = TwoFactorAuthHelper.GenerateOtpUri(user.Email, secretKey);
-
-            // QR kodunu base64 formatında oluştur
             var qrCodeBitmap = TwoFactorAuthHelper.GenerateQrCode(qrCodeUri);
             string qrCodeBase64;
 
@@ -79,11 +74,9 @@ namespace VulnTracker.WebApi.Controllers
                 qrCodeBase64 = Convert.ToBase64String(ms.ToArray());
             }
 
-            // Kullanıcıyı güncelle
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            // QR kodunu base64 formatında geri gönder
             return Ok(new { QrCodeImage = qrCodeBase64 });
         }
 
@@ -91,27 +84,50 @@ namespace VulnTracker.WebApi.Controllers
         [HttpPost("verify-2fa")]
         public async Task<IActionResult> Verify2FA([FromBody] TwoFactorVerifyRequest request)
         {
-            // Kullanıcıyı veritabanından bul
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null)
                 return NotFound("User not found");
 
-            // 2FA doğrulamasını kontrol et
             if (user.IsTwoFactorEnabled && TwoFactorAuthHelper.ValidateOTP(user.SecretKey, request.OtpCode))
             {
-                // 2FA doğrulandı, JWT token oluşturulabilir
                 var token = JwtTokenHelper.GenerateToken(user, _config);
                 return Ok(new { Token = token });
             }
 
             return Unauthorized("Invalid 2FA code.");
         }
+
+        // Validate OTP Endpoint
+        [HttpPost("validate-otp")]
+        public async Task<IActionResult> ValidateOTP([FromBody] OTPValidationRequest request)
+        {
+            // Kullanıcıyı kimlik doğrulama yoluyla (JWT) veya test için sabit bir UserId ile al
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            if (user == null)
+                return NotFound("User not found");
+
+            if (!user.IsTwoFactorEnabled)
+                return BadRequest("Two-factor authentication is not enabled.");
+
+            // OTP doğrulama işlemi
+            var isValid = TwoFactorAuthHelper.ValidateOTP(user.SecretKey, request.OTP);
+            if (!isValid)
+                return BadRequest("Invalid OTP.");
+
+            return Ok(new { Message = "OTP validated successfully." });
+        }
     }
 
-    // DTO sınıfı: Verify2FA endpointine gelen istek için
+    // DTO sınıfları
     public class TwoFactorVerifyRequest
     {
         public string Username { get; set; }
         public string OtpCode { get; set; }
+    }
+
+    public class OTPValidationRequest
+    {
+        public string Username { get; set; }
+        public string OTP { get; set; }
     }
 }
