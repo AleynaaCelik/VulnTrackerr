@@ -31,7 +31,8 @@ public static class TwoFactorAuthHelper
     {
         var qrGenerator = new QRCodeGenerator();
         var qrCodeData = qrGenerator.CreateQrCode(otpUri, QRCodeGenerator.ECCLevel.Q);
-        var qrCode = new QRCode(qrCodeData);
+        var qrCode = new 
+            QRCode(qrCodeData);
         return qrCode.GetGraphic(20);
     }
 
