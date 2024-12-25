@@ -162,3 +162,6 @@ Swagger: API belgelemesi ve kullanıcı etkileşimi.
 
 
 GitHub Actions: Otomatik build işlemleri.
+
+
+![api](https://github.com/user-attachments/assets/4e351782-f93c-4a20-9e55-e922c6fa0c50)
