@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using VulnTracker.DataAccess.Context;
 using FluentValidation.AspNetCore;
+using VulnTracker.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Global Exception Handling Middleware'i ekle
+app.UseGlobalExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
