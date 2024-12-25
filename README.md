@@ -173,3 +173,7 @@ GitHub Actions: Otomatik build işlemleri.
 
 
 ![container](https://github.com/user-attachments/assets/21bb79c9-2eda-411d-9241-114c5c3893e4)
+
+
+![db](https://github.com/user-attachments/assets/083837b1-95b4-41a8-b56f-b4f65d856644)
+
